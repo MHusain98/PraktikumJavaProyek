@@ -15,7 +15,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="f6d1e" class="javax.swing.JLabel">
+          <component id="f6d1e" class="javax.swing.JLabel" binding="cariTextField">
             <constraints border-constraint="West"/>
             <properties>
               <text value="Cari Nama"/>
