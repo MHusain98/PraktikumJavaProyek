@@ -97,6 +97,21 @@ public class KabupatenViewFrame extends JFrame{
             KabupatenInputFrame inputFrame = new KabupatenInputFrame();
             inputFrame.setVisible(true);
         });
+        ubahButton.addActionListener(e -> {
+            int barisTerpilih = viewTable.getSelectedRow();
+            if (barisTerpilih < 0){
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Pilih data dulu"
+                ); return;
+            }
+            TableModel tm = viewTable.getModel();
+            int id = Integer.parseInt(tm.getValueAt(barisTerpilih, 0).toString());
+            KabupatenInputFrame inputFrame = new KabupatenInputFrame();
+            inputFrame.setId(id);
+            inputFrame.isiKomponen();
+            inputFrame.setVisible(true);
+        });
         isiTable();
         init();
     }
