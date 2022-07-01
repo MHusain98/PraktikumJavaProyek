@@ -6,6 +6,7 @@ import helpers.Koneksi;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.*;
@@ -65,6 +66,31 @@ public class KabupatenViewFrame extends JFrame{
                 }
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
+            }
+        });
+        hapusButton.addActionListener(e -> {
+            int barisTerpilih = viewTable.getSelectedRow();
+            if(barisTerpilih < 0){
+                JOptionPane.showMessageDialog(null, "Pilih data dulu");
+                return;
+            }
+            int pilihan = JOptionPane.showConfirmDialog(null,
+                    "Yakin mau hapus?",
+                    "Konfirmasi hapus",
+                    JOptionPane.YES_NO_OPTION
+            );
+            if(pilihan == 0){
+                TableModel tm = viewTable.getModel();
+                int id = Integer.parseInt(tm.getValueAt(barisTerpilih, 0).toString());
+                Connection c = Koneksi.getConnection();
+                String deleteSQL = "DELETE FROM kabupaten WHERE id = ?";
+                try {
+                    PreparedStatement ps = c.prepareStatement(deleteSQL);
+                    ps.setInt(1, id);
+                    ps.executeUpdate();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         isiTable();
