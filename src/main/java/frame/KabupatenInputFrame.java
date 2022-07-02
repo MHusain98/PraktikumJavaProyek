@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class KabupatenInputFrame extends JFrame {
+    private final String ex;
     private JPanel mainPanel;
     private JTextField idTextField;
     private JTextField namaTextField;
@@ -46,16 +47,33 @@ public class KabupatenInputFrame extends JFrame {
         init();
 
         simpanButton.addActionListener(e -> {
+            if (namaTextField.getText().equals("")) {
+                JOptionPane.showMessageDialog(null,
+                        "Isi kata kunci pencarian",
+                        "Validasi kata kunci kosong",
+                        JOptionPane.WARNING_MESSAGE);
+                namaTextField.requestFocus();
+                return;
+            }
             String nama = namaTextField.getText();
             Connection c = Koneksi.getConnection();
             PreparedStatement ps;
             try {
                 if (id == 0) {
-                    String insertSQL = "INSERT INTO kabupaten VALUES (NULL, ?)";
-                    ps = c.prepareStatement(insertSQL);
+                    String cekSQL = "SELECT * FROM kabupaten WHERE nama = ?";
+                    ps = c.prepareStatement(cekSQL);
                     ps.setString(1, nama);
-                    ps.executeUpdate();
-                    dispose();
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        JOptionPane.showMessageDialog(null,
+                                "Data sama sudah ada");
+                    } else {
+                        String insertSQL = "INSERT INTO kabupaten VALUES (NULL, ?)";
+                        ps = c.prepareStatement(insertSQL);
+                        ps.setString(1, nama);
+                        ps.executeUpdate();
+                        dispose();
+                    }
                 } else {
                     String updateSQL = "UPDATE kabupaten SET nama = ? WHERE id = ?";
                     ps = c.prepareStatement(updateSQL);
@@ -68,6 +86,7 @@ public class KabupatenInputFrame extends JFrame {
                 throw new RuntimeException(ex);
             }
         });
+        ex = null;
     }
 
     private void init() {
